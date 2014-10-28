@@ -1,0 +1,13 @@
+// $Id$
+// vim:ft=javascript
+
+If your extension references something external, use ARG_WITH
+ARG_WITH("macro", "for macro support", "no");
+
+// Otherwise, use ARG_ENABLE
+// ARG_ENABLE("macro", "enable macro support", "no");
+
+if (PHP_macro != "no") {
+	EXTENSION("macro", "macro.c");
+}
+
