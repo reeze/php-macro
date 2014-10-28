@@ -39,7 +39,7 @@ extern zend_module_entry macro_module_entry;
 #endif
 
 ZEND_BEGIN_MODULE_GLOBALS(macro)
-	int enable;
+	int active;
 ZEND_END_MODULE_GLOBALS(macro)
 
 PHP_FUNCTION(macro_preprocess);

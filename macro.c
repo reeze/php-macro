@@ -24,6 +24,9 @@
 
 #include "php.h"
 #include "main/php_ini.h"
+#include "ext/standard/info.h"
+
+#include "php_macro.h"
 
 
 #ifndef PHP_FE_END
@@ -41,17 +44,69 @@
 # define zend_parse_parameters_none() zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "")
 #endif
 
+ZEND_DECLARE_MODULE_GLOBALS(macro)
+
 /* {{{ PHP_INI */
 PHP_INI_BEGIN()
-	STD_PHP_INI_BOOLEAN("macro.enable",	"1",	PHP_INI_SYSTEM,		OnUpdateLong,		enable,	zend_macro_globals,		macro_globals)
+	STD_PHP_INI_BOOLEAN("macro.active",	"1",	PHP_INI_SYSTEM,		OnUpdateBool,		active,	zend_macro_globals,		macro_globals)
 PHP_INI_END()
 /* }}} */
 
 
+PHP_FUNCTION(macro_preprocess)
+{
+	char *code;
+	int code_len;
+
+	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s",
+		&code, &code_len) == FAILURE) {
+		return;
+	}
+
+	// TODO implement it
+	RETVAL_STRINGL(code, code_len, 1);
+}
+
+/* {{{ PHP_MINIT_FUNCTION
+ */
+PHP_MINIT_FUNCTION(macro)
+{
+	/* Register constants */
+	REGISTER_STRING_CONSTANT("PHP_MACRO_VERSION", PHP_MACRO_VERSION, CONST_CS | CONST_PERSISTENT);
+
+	REGISTER_INI_ENTRIES();
+
+	return SUCCESS;
+}
+/* }}} */
+
+/* {{{ PHP_MSHUTDOWN_FUNCTION
+ */
+PHP_MSHUTDOWN_FUNCTION(macro)
+{
+       return SUCCESS;
+}
+/* }}} */
+
+/* {{{ PHP_MINFO_FUNCTION
+ */
+PHP_MINFO_FUNCTION(macro)
+{
+	php_info_print_table_start();
+	php_info_print_table_header(2, "macro support", "enabled");
+	php_info_print_table_header(2, "macro active", MACRO_G(active) ? "yes" : "no");
+	php_info_print_table_end();
+}
+/* }}} */
+
+ZEND_BEGIN_ARG_INFO_EX(arginfo_macro_preprocess, 0, 0, 1)
+	ZEND_ARG_INFO(0, code)
+ZEND_END_ARG_INFO()
+
 /* {{{ macro_functions[]
  */
 const zend_function_entry macro_functions[] = {
-	PHP_FUNCTION(macro_preprocess),
+	PHP_FE(macro_preprocess, arginfo_macro_preprocess)
 	PHP_FE_END	/* Must be the last line in macro_functions[] */
 };
 /* }}} */
@@ -79,55 +134,6 @@ zend_module_entry macro_module_entry = {
 #ifdef COMPILE_DL_MACRO
 ZEND_GET_MODULE(macro)
 #endif
-
-
-ZEND_BEGIN_ARG_INFO_EX(arginfo_macro_preprocess, 0, 0, 1)
-	ZEND_ARG_INFO(0, code)
-ZEND_END_ARG_INFO()
-
-PHP_FUNCTION(maco_preprocess)
-{
-	char *code;
-	int code_len;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s",
-		&code, &code_len) == FAILURE) {
-		return;
-	}
-
-	// TODO implement it
-	RETVAL_STRINGL(code, code_len, 1);
-}
-
-/* {{{ PHP_MINIT_FUNCTION
- */
-PHP_MINIT_FUNCTION(macro)
-{
-	/* Register constants */
-	REGISTER_LONG_CONSTANT("PHP_MACRO_VERSION", PHP_MACRO_VERSION, CONST_CS | CONST_PERSISTENT);
-
-	return SUCCESS;
-}
-/* }}} */
-
-/* {{{ PHP_MSHUTDOWN_FUNCTION
- */
-PHP_MSHUTDOWN_FUNCTION(macro)
-{
-       return SUCCESS;
-}
-/* }}} */
-
-/* {{{ PHP_MINFO_FUNCTION
- */
-PHP_MINFO_FUNCTION(macro)
-{
-	php_info_print_table_start();
-	php_info_print_table_header(2, "macro support", "enabled");
-	php_info_print_table_header(2, "macro enabled", MACRO_G(enable) ? "yes" : "no");
-	php_info_print_table_end();
-}
-/* }}} */
 
 /*
  * Local variables:
