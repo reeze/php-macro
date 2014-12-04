@@ -12,7 +12,7 @@ if test "$PHP_MACRO" != "no"; then
   AC_MSG_CHECKING([for mcpp location])
   for i in $PHP_MACRO $SEARCH_PATH ; do
     if test -r $i/$SEARCH_FOR; then
-	  MACRO_INCLUDE_DIR=$i
+	  MCPP_INCLUDE_DIR=$i
 	  AC_MSG_RESULT(mcpp headers found in $i)
     fi
 
