@@ -22,7 +22,7 @@ if test "$PHP_MACRO" != "no"; then
     fi
   done
 
-  if test -z "$MCPP_INCLUDE_DIR" || test -z "$mcpp_LIB_DIR"; then
+  if test -z "$MCPP_INCLUDE_DIR" || test -z "$MCPP_LIB_DIR"; then
     AC_MSG_RESULT([mcpp not found])
     AC_MSG_ERROR([Please reinstall the mcpp distribution])
   fi
